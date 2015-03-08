@@ -6,6 +6,8 @@
     "Caleb An"
   ],
   "dependencies": {
-    "PhysicsJS":"*"
+    "PhysicsJS":"*",
+    "jQuery":"*",
+    "pixi": "*"
   }
 }

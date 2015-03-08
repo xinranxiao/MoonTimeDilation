@@ -9,10 +9,25 @@
   </head>
   <body>
     <!-- Canvas -->
+    <div id="timer">
+      Earth Time (ms):
+      <p id="earthTime"></p>
+
+      Yorke Time (ms):
+      <p id="yorkeTime"></p>
+
+      Time dilation (ms, time Yorke is behind from the Earth):
+      <p id="dilatedTime"></p>
+
+      <button onclick="start()">Start</button>
+      <button onclick="pause()">Stop</button>
+    </div>
     <div id="viewport"></div>
 
     <!-- Scripts -->
+    <script src="dependencies/jQuery/dist/jquery.min.js"></script>
     <script src="dependencies/PhysicsJS/dist/physicsjs-full.min.js"></script>
+    <script src="dependencies/pixi/bin/pixi.dev.js"></script>
     <script src="main.js"></script>
   </body>
 </html>

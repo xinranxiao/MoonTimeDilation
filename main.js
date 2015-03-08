@@ -5,7 +5,12 @@
 // Simple example of a newtonian orbit
 //
 
-Physics(function (world) {
+var outsideWorld;
+
+Physics({
+  timestep: 100
+}, function (world) {
+  outsideWorld = world;
 
   // bounds of the window
   var viewportBounds = Physics.aabb(0, 0, window.innerWidth, window.innerHeight)
@@ -14,7 +19,9 @@ Physics(function (world) {
     ;
 
   // create a renderer
-  renderer = Physics.renderer('canvas', {
+  renderer = Physics.renderer('pixi', {
+    width: window.innerWidth,
+    height: window.innerHeight,
     el: 'viewport'
   });
 
@@ -42,62 +49,90 @@ Physics(function (world) {
 
   }, true);
 
-  // create some bodies
-  world.add( Physics.body('circle', {
+  // Add Spaceship
+  var spaceship = Physics.body('circle', {
     x: renderer.width / 2
     ,y: renderer.height / 2 - 240
     ,vx: -0.15
-    ,mass: 1
+    ,mass: 0.1
     ,radius: 30
     ,styles: {
-      fillStyle: '#cb4b16'
-      ,angleIndicator: '#72240d'
+      fillStyle: '0xcb4b16'
+      ,angleIndicator: '0x72240d'
     }
-  }));
+  });
+  spaceship.view = renderer.createDisplay('sprite', {
+    texture: 'images/yorke.png',
+    anchor: {
+      x: 0.5,
+      y: 0.5
+    }
+  });
+  world.add(spaceship);
 
-  world.add( Physics.body('circle', {
+
+  var earth = Physics.body('circle', {
     x: renderer.width / 2
     ,y: renderer.height / 2
     ,radius: 50
     ,mass: 20
-    ,vx: 0.007
+    ,vx: 0
     ,vy: 0
     ,styles: {
-      fillStyle: '#6c71c4'
-      ,angleIndicator: '#3b3e6b'
+      fillStyle: '0x6c71c4'
+      ,angleIndicator: '0x3b3e6b'
     }
-  }));
+  });
+  earth.view = renderer.createDisplay('sprite', {
+    texture: 'images/earth.jpg',
+    anchor: {
+      x: 0.5,
+      y: 0.5
+    }
+  });
+  // Add Earth
+  world.add(earth);
 
-  // add some fun interaction
+  // Add attraction between masses.
   var attractor = Physics.behavior('attractor', {
     order: 0,
     strength: .002
   });
-  world.on({
-    'interact:poke': function( pos ){
-      world.wakeUpAll();
-      attractor.position( pos );
-      world.add( attractor );
-    }
-    ,'interact:move': function( pos ){
-      attractor.position( pos );
-    }
-    ,'interact:release': function(){
-      world.wakeUpAll();
-      world.remove( attractor );
-    }
-  });
 
-  // add things to the world
+  // add gravity to the world
   world.add([
-    Physics.behavior('interactive', { el: renderer.container })
-    ,Physics.behavior('newtonian', { strength: .5 })
-    ,Physics.behavior('body-impulse-response')
+    Physics.behavior('newtonian', { strength:.25 }) // Gravitational constant
     ,edgeBounce
   ]);
 
+  // Make the world 'go' faster
+  world.warp(1);
+
+  var startTime = Date.now();
+  var dilationConstant = 1 / Math.sqrt(1 - (Math.pow(150, 2) / Math.pow(3e8, 2)));  // Assuming constant velocity / circular orbit.
+  var dilatedTimeElement = $('#dilatedTime');
+  var earthTimeElement = $('#earthTime');
+  var yorkeTimeElement = $('#yorkeTime');
+  var earthTime = 0;
+  var yorkeTimer = 0;
+
   // subscribe to ticker to advance the simulation
   Physics.util.ticker.on(function( time ) {
+    earthTime = time - startTime;
+    yorkeTimer = earthTime / dilationConstant;
+
+    dilatedTimeElement.html(earthTime - yorkeTimer);
+    earthTimeElement.html(earthTime);
+    yorkeTimeElement.html(yorkeTimer);
+
     world.step( time );
   });
 });
+
+function start() {
+  Physics.util.ticker.start();
+}
+
+function pause() {
+  Physics.util.ticker.stop()
+}

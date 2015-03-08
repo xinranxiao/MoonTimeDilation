@@ -1,2 +1,10 @@
 html, body { height: 100%; margin: 0; }
 #viewport { position: relative; height: 100%; background: #1d1f20; }
+
+#timer {
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  color: #ffffff;
+  z-index: 1000;
+}
