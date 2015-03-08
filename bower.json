@@ -1,0 +1,11 @@
+{
+  "name": "MoonTimeDilation",
+  "version": "0.1.0",
+  "authors": [
+    "Xinran Xiao",
+    "Caleb An"
+  ],
+  "dependencies": {
+    "PhysicsJS":"*"
+  }
+}
