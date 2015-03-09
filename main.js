@@ -1,10 +1,6 @@
 /**
- * Created by XInran Xiao on 3/8/2015.
+ * Created by XInran Xiao & Caleb An on 3/8/2015.
  */
-//
-// Simple example of a newtonian orbit
-//
-
 var outsideWorld;
 
 Physics({
@@ -41,16 +37,14 @@ Physics({
 
   // resize events
   window.addEventListener('resize', function () {
-
     // as of 0.7.0 the renderer will auto resize... so we just take the values from the renderer
     viewportBounds = Physics.aabb(0, 0, renderer.width, renderer.height);
     // update the boundaries
     edgeBounce.setAABB(viewportBounds);
-
   }, true);
 
-  // Add Spaceship
-  var spaceship = Physics.body('circle', {
+  // Add Yorke
+  var yorke = Physics.body('circle', {
     x: renderer.width / 2
     ,y: renderer.height / 2 - 240
     ,vx: -0.15
@@ -61,16 +55,16 @@ Physics({
       ,angleIndicator: '0x72240d'
     }
   });
-  spaceship.view = renderer.createDisplay('sprite', {
+  yorke.view = renderer.createDisplay('sprite', {
     texture: 'images/yorke.png',
     anchor: {
       x: 0.5,
       y: 0.5
     }
   });
-  world.add(spaceship);
+  world.add(yorke);
 
-
+  // Add Earth
   var earth = Physics.body('circle', {
     x: renderer.width / 2
     ,y: renderer.height / 2
@@ -90,7 +84,6 @@ Physics({
       y: 0.5
     }
   });
-  // Add Earth
   world.add(earth);
 
   // Add attraction between masses.
@@ -99,14 +92,11 @@ Physics({
     strength: .002
   });
 
-  // add gravity to the world
+  // Add gravity to the world
   world.add([
     Physics.behavior('newtonian', { strength:.25 }) // Gravitational constant
     ,edgeBounce
   ]);
-
-  // Make the world 'go' faster
-  world.warp(1);
 
   var startTime = Date.now();
   var dilationConstant = 1 / Math.sqrt(1 - (Math.pow(150, 2) / Math.pow(3e8, 2)));  // Assuming constant velocity / circular orbit.
