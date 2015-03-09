@@ -106,7 +106,9 @@ Physics({
   var earthTime = 0;
   var yorkeTimer = 0;
 
-  $('#velocity').html(Math.sqrt(Math.pow(yorke.state.vel.x, 2) + Math.pow(yorke.state.vel.y, 2)));
+  // We need to multiply by 1000 because the terms are in per millisecond
+  $('#velocity').html(1000 * Math.sqrt(Math.pow(yorke.state.vel.x, 2) + Math.pow(yorke.state.vel.y, 2)));
+
   // subscribe to ticker to advance the simulation
   Physics.util.ticker.on(function( time ) {
     earthTime = time - startTime;
